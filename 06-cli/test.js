@@ -4,9 +4,16 @@ const database = require('./database');
 
 const DEFAULT_ITEM_CADASTRAR = { nome: 'Batman', poder: 'Speed', id: 2 };
 
+const DEFAULT_ITEM_ATUALIZAR = {
+  nome: 'Lanterna Verde',
+  poder: 'Energia do Anel',
+  id: 3,
+};
+
 describe('Suite de manipulação de Herois', () => {
   before(async () => {
     await database.cadastrar(DEFAULT_ITEM_CADASTRAR);
+    await database.cadastrar(DEFAULT_ITEM_ATUALIZAR);
   });
 
   it('deve pesquisar um heroi usando arquivos', async () => {
@@ -32,6 +39,23 @@ describe('Suite de manipulação de Herois', () => {
   it('deve remover um heroi por id', async () => {
     const expected = true;
     const resultado = await database.remover(DEFAULT_ITEM_CADASTRAR.id);
+    deepEqual(resultado, expected);
+  });
+
+  it('deve atualizar um heroi pelo id', async () => {
+    const expected = {
+      ...DEFAULT_ITEM_ATUALIZAR,
+      nome: 'Superman',
+      poder: 'Super Força',
+    };
+
+    const novoDado = {
+      nome: 'Superman',
+      poder: 'Super Força',
+    };
+
+    await database.atualizar(DEFAULT_ITEM_ATUALIZAR.id, novoDado);
+    const [resultado] = await database.listar(DEFAULT_ITEM_ATUALIZAR.id);
     deepEqual(resultado, expected);
   });
 });
